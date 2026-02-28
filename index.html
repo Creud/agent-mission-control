@@ -34,6 +34,22 @@
 /* ── Offline mode agent sprite dimmed ── */
 .agent-sprite.offline img{filter:grayscale(0.8) brightness(0.6);border-color:var(--text4);box-shadow:none;}
 .agent-sprite.offline .sprite-status{color:var(--text4);}
+
+/* ── News Feed Strip ── */
+.news-strip{margin-top:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;max-height:180px;display:flex;flex-direction:column;}
+.news-strip-header{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.news-strip-header .ns-label{font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;}
+.news-strip-header .ns-dot{width:5px;height:5px;border-radius:50%;background:var(--up);animation:pulse 2s infinite;flex-shrink:0;}
+.news-strip-header .ns-src{font-size:0.52rem;color:var(--text4);}
+.news-items{overflow-y:auto;flex:1;}
+.news-item{display:flex;gap:8px;padding:7px 12px;border-bottom:1px solid var(--border);cursor:pointer;text-decoration:none;transition:background 0.15s;}
+.news-item:last-child{border-bottom:none;}
+.news-item:hover{background:var(--bg3);}
+.news-item .ni-source{font-size:0.52rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;flex-shrink:0;padding-top:2px;min-width:60px;}
+.news-item .ni-title{font-size:0.62rem;color:var(--text2);line-height:1.4;}
+.news-item:hover .ni-title{color:var(--text);}
+.news-loading{padding:16px 12px;font-size:0.62rem;color:var(--text4);text-align:center;}
+@media(max-width:640px){.news-strip{max-height:160px;}.news-item .ni-source{min-width:48px;}}
 </style>
 </head>
 <body><div class="topbar"><div class="page-title" id="page-title">Virtual Office</div><div class="ticker-pill"><span class="sym">SOL</span><span class="val" id="sol-val">--</span><span id="sol-chg" style="font-size:0.62rem">--</span></div><button class="theme-toggle" style="margin:0;width:auto;padding:3px 10px;font-size:0.62rem;" onclick="toggleTheme()" id="theme-btn">&#9790;</button></div><div class="app"><div class="sidebar"><div class="sidebar-header-inner">
@@ -53,7 +69,18 @@
   <div class="sprite-label">Steffan</div>
   <img src="avatar.jpg" alt="Steffan" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22><rect width=%2248%22 height=%2248%22 rx=%228%22 fill=%22%2300d084%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2224%22>🐒</text></svg>'">
   <div class="sprite-status" id="sprite-status-txt">analyzing...</div>
-</div><div class="office-overlay"><div class="office-label"><span>CD Office</span></div><div style="font-size:0.62rem;color:var(--text2)" id="office-time">--</div></div></div></div></div><div id="view-markets" class="view"><div class="panel-inner"><div style="color:var(--text4);font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Live Prices</div><div class="cards-grid">
+</div><div class="office-overlay"><div class="office-label"><span>CD Office</span></div><div style="font-size:0.62rem;color:var(--text2)" id="office-time">--</div></div>
+</div>
+<!-- NEWS FEED STRIP (test) -->
+<div class="news-strip" id="news-strip">
+  <div class="news-strip-header">
+    <div style="display:flex;align-items:center;gap:6px;"><div class="ns-dot"></div><span class="ns-label">📡 Signal Feed</span></div>
+    <span class="ns-src" id="ns-updated">loading...</span>
+  </div>
+  <div class="news-items" id="news-items">
+    <div class="news-loading">Fetching feed...</div>
+  </div>
+</div></div><div id="view-markets" class="view"><div class="panel-inner"><div style="color:var(--text4);font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Live Prices</div><div class="cards-grid">
 <div class="card"><div class="label">SOL</div><div class="value" id="m-sol">--</div><div class="change" id="m-sol-chg">--</div></div>
 <div class="card"><div class="label">BTC</div><div class="value" id="m-btc">--</div><div class="change" id="m-btc-chg">--</div></div>
 <div class="card"><div class="label">ETH</div><div class="value" id="m-eth">--</div><div class="change" id="m-eth-chg">--</div></div>
@@ -259,4 +286,57 @@ function timeSince(isoStr){
 tick();setInterval(tick,1000);
 fetchPrices();setInterval(fetchPrices,30000);
 pollAgentHealth();setInterval(pollAgentHealth,15000);
+</script>
+<script>
+// ── RSS News Feed ──
+const RSS_SOURCES = [
+  { label: 'CoinDesk',    url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.coindesk.com%2Farc%2Foutboundfeeds%2Frss%2F&count=8' },
+  { label: 'Decrypt',     url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fdecrypt.co%2Ffeed&count=8' },
+  { label: 'The Block',   url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.theblockcrypto.com%2Frss.xml&count=8' },
+  { label: 'AI News',     url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fventurebeat.com%2Fcategory%2Fai%2Ffeed%2F&count=6' },
+];
+
+let allItems = [];
+
+async function fetchFeed(src) {
+  try {
+    const r = await fetch(src.url);
+    const d = await r.json();
+    if (!d.items) return [];
+    return d.items.map(item => ({
+      source: src.label,
+      title: item.title,
+      link: item.link,
+      date: new Date(item.pubDate)
+    }));
+  } catch(e) { return []; }
+}
+
+async function loadNews() {
+  const el = document.getElementById('news-items');
+  const upd = document.getElementById('ns-updated');
+  
+  const results = await Promise.all(RSS_SOURCES.map(fetchFeed));
+  allItems = results.flat().sort((a,b) => b.date - a.date).slice(0, 30);
+  
+  if (!allItems.length) {
+    el.innerHTML = '<div class="news-loading">No feed data available</div>';
+    upd.textContent = 'error';
+    return;
+  }
+  
+  el.innerHTML = allItems.map(item => `
+    <a class="news-item" href="${item.link}" target="_blank" rel="noopener">
+      <span class="ni-source">${item.source}</span>
+      <span class="ni-title">${item.title}</span>
+    </a>
+  `).join('');
+  
+  const mins = Math.round((Date.now() - allItems[0].date) / 60000);
+  upd.textContent = mins < 60 ? mins + 'm ago' : Math.round(mins/60) + 'h ago';
+}
+
+// Load on init, refresh every 5 min
+loadNews();
+setInterval(loadNews, 5 * 60 * 1000);
 </script></body></html>
