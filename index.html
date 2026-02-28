@@ -288,55 +288,85 @@ fetchPrices();setInterval(fetchPrices,30000);
 pollAgentHealth();setInterval(pollAgentHealth,15000);
 </script>
 <script>
-// ── RSS News Feed ──
-const RSS_SOURCES = [
-  { label: 'CoinDesk',    url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.coindesk.com%2Farc%2Foutboundfeeds%2Frss%2F&count=8' },
-  { label: 'Decrypt',     url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fdecrypt.co%2Ffeed&count=8' },
-  { label: 'The Block',   url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fwww.theblockcrypto.com%2Frss.xml&count=8' },
-  { label: 'AI News',     url: 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fventurebeat.com%2Fcategory%2Fai%2Ffeed%2F&count=6' },
-];
-
-let allItems = [];
-
-async function fetchFeed(src) {
-  try {
-    const r = await fetch(src.url);
-    const d = await r.json();
-    if (!d.items) return [];
-    return d.items.map(item => ({
-      source: src.label,
-      title: item.title,
-      link: item.link,
-      date: new Date(item.pubDate)
-    }));
-  } catch(e) { return []; }
-}
-
+// ── RSS News Feed (via /api/news) ──
 async function loadNews() {
   const el = document.getElementById('news-items');
   const upd = document.getElementById('ns-updated');
   
-  const results = await Promise.all(RSS_SOURCES.map(fetchFeed));
-  allItems = results.flat().sort((a,b) => b.date - a.date).slice(0, 30);
-  
-  if (!allItems.length) {
-    el.innerHTML = '<div class="news-loading">No feed data available</div>';
+  try {
+    const r = await fetch('/api/news');
+    if (!r.ok) throw new Error('news api failed');
+    const d = await r.json();
+    
+    if (!d.items || !d.items.length) {
+      el.innerHTML = '<div class="news-loading">No feed data available</div>';
+      upd.textContent = 'error';
+      return;
+    }
+    
+    el.innerHTML = d.items.map(item => `
+      <a class="news-item" href="${item.link}" target="_blank" rel="noopener">
+        <span class="ni-source">${item.source}</span>
+        <span class="ni-title">${item.title}</span>
+      </a>
+    `).join('');
+    
+    const date = new Date(d.items[0].pubDate);
+    const mins = Math.round((Date.now() - date) / 60000);
+    upd.textContent = mins < 60 ? mins + 'm ago' : Math.round(mins/60) + 'h ago';
+  } catch(e) {
+    el.innerHTML = '<div class="news-loading">Feed unavailable</div>';
     upd.textContent = 'error';
-    return;
   }
-  
-  el.innerHTML = allItems.map(item => `
-    <a class="news-item" href="${item.link}" target="_blank" rel="noopener">
-      <span class="ni-source">${item.source}</span>
-      <span class="ni-title">${item.title}</span>
-    </a>
-  `).join('');
-  
-  const mins = Math.round((Date.now() - allItems[0].date) / 60000);
-  upd.textContent = mins < 60 ? mins + 'm ago' : Math.round(mins/60) + 'h ago';
 }
 
-// Load on init, refresh every 5 min
+// ── Agent Log (via /api/agent-log) ──
+async function loadAgentLog() {
+  const logView = document.getElementById('view-logs');
+  if (!logView) return;
+  
+  try {
+    const r = await fetch('/api/agent-log');
+    if (!r.ok) throw new Error('agent-log api failed');
+    const d = await r.json();
+    
+    if (!d.entries || !d.entries.length) {
+      logView.innerHTML = '<div class="empty-state">💻 No recent agent activity.</div>';
+      return;
+    }
+    
+    const logHtml = `
+      <div class="panel-inner">
+        <div style="color:var(--text4);font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Recent Activity</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${d.entries.map(e => `
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:10px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span style="font-size:0.58rem;color:var(--accent);text-transform:uppercase;">${e.role}</span>
+                <span style="font-size:0.52rem;color:var(--text4);">${new Date(e.timestamp).toLocaleTimeString()}</span>
+              </div>
+              <div style="font-size:0.65rem;color:var(--text2);line-height:1.5;">${escapeHtml(e.content)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    
+    logView.innerHTML = logHtml;
+  } catch(e) {
+    logView.innerHTML = '<div class="empty-state">💻 Agent log connection failed.<br>Check API configuration.</div>';
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Load on init, refresh every 10s
 loadNews();
 setInterval(loadNews, 5 * 60 * 1000);
+loadAgentLog();
+setInterval(loadAgentLog, 10 * 1000);
 </script></body></html>
