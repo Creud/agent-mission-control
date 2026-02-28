@@ -1,4 +1,6 @@
 {
+  "buildCommand": null,
+  "framework": null,
   "rewrites": [
     { "source": "/api/prices", "destination": "/api/prices.js" },
     { "source": "/api/news", "destination": "/api/news.js" },
