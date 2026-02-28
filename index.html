@@ -263,17 +263,18 @@ document.addEventListener("DOMContentLoaded",function(){
 var lastHealth={};
 async function pollAgentHealth(){
   try{
-    var r=await fetch("/api/health");
-    if(!r.ok)throw new Error("no health endpoint");
+    var r=await fetch("/api/status");
+    if(!r.ok)throw new Error("status api failed");
     var d=await r.json();
     lastHealth=d;
-    var online=d.apiStatus==="healthy";
-    var stxt=online?(d.activity||"active"):("last seen "+(d.lastSuccessAt?timeSince(d.lastSuccessAt):"never"));
-    setAgentStatus(online,stxt);
-    setSpriteStatus(online?(d.activity||"scanning..."):"offline");
+    var online=d.online||false;
+    var activity=d.activity||"offline";
+    setAgentStatus(online,activity);
+    setSpriteStatus(online?activity:"offline");
   }catch(e){
-    // no health API — always show agent as online
-    setAgentStatus(true,"online — live");
+    // API down — show offline
+    setAgentStatus(false,"offline");
+    setSpriteStatus("offline");
   }
 }
 

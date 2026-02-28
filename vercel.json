@@ -4,6 +4,7 @@
   "rewrites": [
     { "source": "/api/prices", "destination": "/api/prices.js" },
     { "source": "/api/news", "destination": "/api/news.js" },
-    { "source": "/api/agent-log", "destination": "/api/agent-log.js" }
+    { "source": "/api/agent-log", "destination": "/api/agent-log.js" },
+    { "source": "/api/status", "destination": "/api/status.js" }
   ]
 }
