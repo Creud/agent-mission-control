@@ -144,7 +144,7 @@ const officeLayout = new DraggableLayout();
       { x: 50, y: 20, w: 50, h: 60, name: 'right' }
     ];
     
-    const threshold = 15; // snap if within 15% of zone
+    const threshold = 8; // snap if within 15% of zone
     for (const zone of zones) {
       if (Math.abs(x - zone.x) < threshold && Math.abs(y - zone.y) < threshold) {
         return zone;
