@@ -1,9 +1,14 @@
-// Draggable grid layout for office view
+// Draggable grid layout for office view with snap-to-grid
 class DraggableLayout {
   constructor() {
     this.widgets = new Map();
     this.draggedElement = null;
+    this.snapGrid = 5; // snap every 5%
     this.loadLayout();
+  }
+
+  snap(value) {
+    return Math.round(value / this.snapGrid) * this.snapGrid;
   }
 
   loadLayout() {
@@ -35,7 +40,7 @@ class DraggableLayout {
     localStorage.setItem('office-layout', JSON.stringify(layout));
   }
 
-  register(id, element) {
+  register(id, element, dragHeaderSelector = null) {
     const layout = this.loadLayout();
     const pos = layout[id] || { x: 0, y: 0, w: 100, h: 25 };
     
@@ -45,10 +50,18 @@ class DraggableLayout {
     element.style.width = pos.w + '%';
     element.style.height = pos.h + '%';
     
-    const handle = this.createDragHandle(element);
-    element.insertBefore(handle, element.firstChild);
+    const dragArea = dragHeaderSelector 
+      ? element.querySelector(dragHeaderSelector) 
+      : this.createDragHandle(element);
     
-    this.widgets.set(id, { el: element, handle });
+    if (!dragHeaderSelector) {
+      element.insertBefore(dragArea, element.firstChild);
+    } else {
+      dragArea.style.cursor = 'move';
+    }
+    
+    this.makeDraggable(element, dragArea);
+    this.widgets.set(id, { el: element, dragArea });
   }
 
   createDragHandle(element) {
@@ -66,11 +79,14 @@ class DraggableLayout {
       user-select: none;
       z-index: 100;
     `;
-    
+    return handle;
+  }
+
+  makeDraggable(element, dragArea) {
     let isDragging = false;
     let startX, startY, startLeft, startTop;
     
-    handle.addEventListener('mousedown', (e) => {
+    dragArea.addEventListener('mousedown', (e) => {
       isDragging = true;
       startX = e.clientX;
       startY = e.clientY;
@@ -84,19 +100,29 @@ class DraggableLayout {
       if (!isDragging) return;
       const dx = ((e.clientX - startX) / window.innerWidth) * 100;
       const dy = ((e.clientY - startY) / window.innerHeight) * 100;
-      element.style.left = Math.max(0, Math.min(100 - parseFloat(element.style.width), startLeft + dx)) + '%';
-      element.style.top = Math.max(0, Math.min(100 - parseFloat(element.style.height), startTop + dy)) + '%';
+      let newLeft = startLeft + dx;
+      let newTop = startTop + dy;
+      
+      // Clamp to viewport
+      newLeft = Math.max(0, Math.min(100 - parseFloat(element.style.width), newLeft));
+      newTop = Math.max(0, Math.min(100 - parseFloat(element.style.height), newTop));
+      
+      element.style.left = newLeft + '%';
+      element.style.top = newTop + '%';
     });
     
     document.addEventListener('mouseup', () => {
       if (isDragging) {
         isDragging = false;
+        // Snap to grid
+        const left = parseFloat(element.style.left);
+        const top = parseFloat(element.style.top);
+        element.style.left = this.snap(left) + '%';
+        element.style.top = this.snap(top) + '%';
         element.style.zIndex = '';
         this.saveLayout();
       }
     });
-    
-    return handle;
   }
 }
 

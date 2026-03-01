@@ -41,13 +41,13 @@
 .news-strip-header .ns-label{font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;}
 .news-strip-header .ns-dot{width:5px;height:5px;border-radius:50%;background:var(--up);animation:pulse 2s infinite;flex-shrink:0;}
 .news-strip-header .ns-src{font-size:0.52rem;color:var(--text4);}
-.news-items{overflow-y:auto;flex:1;}
-.news-item{display:flex;gap:8px;padding:7px 12px;border-bottom:1px solid var(--border);cursor:pointer;text-decoration:none;transition:background 0.15s;}
-.news-item:last-child{border-bottom:none;}
-.news-item:hover{background:var(--bg3);}
-.news-item .ni-source{font-size:0.52rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;flex-shrink:0;padding-top:2px;min-width:60px;}
-.news-item .ni-title{font-size:0.62rem;color:var(--text2);line-height:1.4;}
-.news-item:hover .ni-title{color:var(--text);}
+.news-items{overflow:hidden;flex:1;display:flex;flex-direction:column;gap:4px;padding:8px 12px;}
+.news-item{display:flex;gap:8px;padding:10px 12px;border-radius:6px;cursor:pointer;text-decoration:none;transition:all 0.3s;background:var(--bg3);opacity:0;transform:translateY(10px);animation:slideIn 0.4s ease forwards;}
+.news-item:hover{background:var(--border);transform:translateX(4px);}
+.news-item .ni-source{font-size:0.58rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;flex-shrink:0;min-width:70px;font-weight:bold;}
+.news-item .ni-title{font-size:0.75rem;color:var(--text);line-height:1.5;}
+.news-item:hover .ni-title{color:var(--accent);}
+@keyframes slideIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 .news-loading{padding:16px 12px;font-size:0.62rem;color:var(--text4);text-align:center;}
 @media(max-width:640px){.news-strip{max-height:160px;}.news-item .ni-source{min-width:48px;}}
 </style>
@@ -293,8 +293,10 @@ pollAgentHealth();setInterval(pollAgentHealth,15000);
 </script>
 <script>
 // ── RSS News Feed (via /api/news) ──
+let allNewsItems = [];
+let newsIndex = 0;
+
 async function loadNews() {
-  const el = document.getElementById('news-items');
   const upd = document.getElementById('ns-updated');
   
   try {
@@ -303,26 +305,41 @@ async function loadNews() {
     const d = await r.json();
     
     if (!d.items || !d.items.length) {
-      el.innerHTML = '<div class="news-loading">No feed data available</div>';
+      document.getElementById('news-items').innerHTML = '<div class="news-loading">No feed data available</div>';
       upd.textContent = 'error';
       return;
     }
     
-    el.innerHTML = d.items.map(item => `
-      <a class="news-item" href="${item.link}" target="_blank" rel="noopener">
-        <span class="ni-source">${item.source}</span>
-        <span class="ni-title">${item.title}</span>
-      </a>
-    `).join('');
+    allNewsItems = d.items;
+    newsIndex = 0;
+    cycleNews();
     
     const date = new Date(d.items[0].pubDate);
     const mins = Math.round((Date.now() - date) / 60000);
     upd.textContent = mins < 60 ? mins + 'm ago' : Math.round(mins/60) + 'h ago';
   } catch(e) {
-    el.innerHTML = '<div class="news-loading">Feed unavailable</div>';
+    document.getElementById('news-items').innerHTML = '<div class="news-loading">Feed unavailable</div>';
     upd.textContent = 'error';
   }
 }
+
+function cycleNews() {
+  const el = document.getElementById('news-items');
+  if (!allNewsItems.length) return;
+  
+  const visible = allNewsItems.slice(newsIndex, newsIndex + 3);
+  el.innerHTML = visible.map((item, i) => `
+    <a class="news-item" href="${item.link}" target="_blank" rel="noopener" style="animation-delay:${i*0.1}s">
+      <span class="ni-source">${item.source}</span>
+      <span class="ni-title">${item.title}</span>
+    </a>
+  `).join('');
+  
+  newsIndex = (newsIndex + 3) % allNewsItems.length;
+}
+
+// Cycle news every 8 seconds
+setInterval(cycleNews, 8000);
 
 // ── Agent Log (via /api/agent-log) ──
 async function loadAgentLog() {
@@ -380,7 +397,7 @@ setInterval(loadAgentLog, 10 * 1000);
 document.addEventListener('DOMContentLoaded', () => {
   const newsWidget = document.getElementById('widget-news');
   const officeWidget = document.getElementById('widget-office');
-  if (newsWidget) officeLayout.register('news', newsWidget);
+  if (newsWidget) officeLayout.register("news", newsWidget, ".news-strip-header"); if (officeWidget) officeLayout.register('news', newsWidget);
   if (officeWidget) officeLayout.register('office', officeWidget);
 });
 </script></body></html>
