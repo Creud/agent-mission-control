@@ -93,6 +93,7 @@ class DraggableLayout {
       startLeft = parseFloat(element.style.left) || 0;
       startTop = parseFloat(element.style.top) || 0;
       element.style.zIndex = 1000;
+      element.classList.add("dragging");
       e.preventDefault();
     });
     
@@ -120,6 +121,7 @@ class DraggableLayout {
         element.style.left = this.snap(left) + '%';
         element.style.top = this.snap(top) + '%';
         element.style.zIndex = '';
+        element.classList.remove('dragging');
         this.saveLayout();
       }
     });
