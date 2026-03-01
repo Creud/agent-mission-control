@@ -1,10 +1,7 @@
-// Draggable grid layout for office view with snap-to-grid
 class DraggableLayout {
   constructor() {
     this.widgets = new Map();
-    this.draggedElement = null;
-    this.snapGrid = 5; // snap every 5%
-    this.loadLayout();
+    this.snapGrid = 5;
   }
 
   snap(value) {
@@ -14,9 +11,9 @@ class DraggableLayout {
   loadLayout() {
     try {
       const saved = localStorage.getItem('office-layout');
-      return saved ? JSON.parse(saved) : this.getDefaultLayout();
+      return saved ? JSON.parse(saved) : null;
     } catch(e) {
-      return this.getDefaultLayout();
+      return null;
     }
   }
 
@@ -40,8 +37,8 @@ class DraggableLayout {
     localStorage.setItem('office-layout', JSON.stringify(layout));
   }
 
-  register(id, element, dragHeaderSelector = null) {
-    const layout = this.loadLayout();
+  register(id, element, dragSelector = null) {
+    const layout = this.loadLayout() || this.getDefaultLayout();
     const pos = layout[id] || { x: 0, y: 0, w: 100, h: 25 };
     
     element.style.position = 'absolute';
@@ -50,36 +47,13 @@ class DraggableLayout {
     element.style.width = pos.w + '%';
     element.style.height = pos.h + '%';
     
-    const dragArea = dragHeaderSelector 
-      ? element.querySelector(dragHeaderSelector) 
-      : this.createDragHandle(element);
-    
-    if (!dragHeaderSelector) {
-      element.insertBefore(dragArea, element.firstChild);
-    } else {
+    const dragArea = dragSelector ? element.querySelector(dragSelector) : element;
+    if (dragArea) {
       dragArea.style.cursor = 'move';
+      this.makeDraggable(element, dragArea);
     }
     
-    this.makeDraggable(element, dragArea);
     this.widgets.set(id, { el: element, dragArea });
-  }
-
-  createDragHandle(element) {
-    const handle = document.createElement('div');
-    handle.className = 'drag-handle';
-    handle.innerHTML = '⋮⋮';
-    handle.style.cssText = `
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      cursor: move;
-      font-size: 1rem;
-      color: var(--text3);
-      padding: 4px 8px;
-      user-select: none;
-      z-index: 100;
-    `;
-    return handle;
   }
 
   makeDraggable(element, dragArea) {
@@ -93,7 +67,7 @@ class DraggableLayout {
       startLeft = parseFloat(element.style.left) || 0;
       startTop = parseFloat(element.style.top) || 0;
       element.style.zIndex = 1000;
-      element.classList.add("dragging");
+      element.classList.add('dragging');
       e.preventDefault();
     });
     
@@ -104,7 +78,6 @@ class DraggableLayout {
       let newLeft = startLeft + dx;
       let newTop = startTop + dy;
       
-      // Clamp to viewport
       newLeft = Math.max(0, Math.min(100 - parseFloat(element.style.width), newLeft));
       newTop = Math.max(0, Math.min(100 - parseFloat(element.style.height), newTop));
       
@@ -115,18 +88,12 @@ class DraggableLayout {
     document.addEventListener('mouseup', () => {
       if (isDragging) {
         isDragging = false;
-        // Snap to grid
         const left = parseFloat(element.style.left);
         const top = parseFloat(element.style.top);
         element.style.left = this.snap(left) + '%';
         element.style.top = this.snap(top) + '%';
         element.style.zIndex = '';
         element.classList.remove('dragging');
-        const zone = this.findSnapZone(left, top, parseFloat(element.style.width), parseFloat(element.style.height));
-        if (zone) {
-          element.style.left = zone.x + "%";
-          element.style.top = zone.y + "%";
-        }
         this.saveLayout();
       }
     });
@@ -134,22 +101,3 @@ class DraggableLayout {
 }
 
 const officeLayout = new DraggableLayout();
-
-  findSnapZone(x, y, w, h) {
-    // Define snap zones (top, bottom, left, right, corners)
-    const zones = [
-      { x: 0, y: 0, w: 100, h: 20, name: 'top' },
-      { x: 0, y: 80, w: 100, h: 20, name: 'bottom' },
-      { x: 0, y: 20, w: 50, h: 60, name: 'left' },
-      { x: 50, y: 20, w: 50, h: 60, name: 'right' }
-    ];
-    
-    const threshold = 8; // snap if within 15% of zone
-    for (const zone of zones) {
-      if (Math.abs(x - zone.x) < threshold && Math.abs(y - zone.y) < threshold) {
-        return zone;
-      }
-    }
-    return null;
-  }
-}
