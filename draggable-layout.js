@@ -122,6 +122,11 @@ class DraggableLayout {
         element.style.top = this.snap(top) + '%';
         element.style.zIndex = '';
         element.classList.remove('dragging');
+        const zone = this.findSnapZone(left, top, parseFloat(element.style.width), parseFloat(element.style.height));
+        if (zone) {
+          element.style.left = zone.x + "%";
+          element.style.top = zone.y + "%";
+        }
         this.saveLayout();
       }
     });
@@ -129,3 +134,22 @@ class DraggableLayout {
 }
 
 const officeLayout = new DraggableLayout();
+
+  findSnapZone(x, y, w, h) {
+    // Define snap zones (top, bottom, left, right, corners)
+    const zones = [
+      { x: 0, y: 0, w: 100, h: 20, name: 'top' },
+      { x: 0, y: 80, w: 100, h: 20, name: 'bottom' },
+      { x: 0, y: 20, w: 50, h: 60, name: 'left' },
+      { x: 50, y: 20, w: 50, h: 60, name: 'right' }
+    ];
+    
+    const threshold = 15; // snap if within 15% of zone
+    for (const zone of zones) {
+      if (Math.abs(x - zone.x) < threshold && Math.abs(y - zone.y) < threshold) {
+        return zone;
+      }
+    }
+    return null;
+  }
+}
