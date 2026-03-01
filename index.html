@@ -1,0 +1,403 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Pedro MC</title><style>:root{--bg:#0a0a0a;--bg2:#0d0d0d;--bg3:#111;--border:#1e1e1e;--border2:#222;--text:#e0e0e0;--text2:#888;--text3:#555;--text4:#444;--accent:#f0a500;--up:#00d084;--down:#ff4d4d;--card-bg:#111;--topbar:#0d0d0d;--overlay:rgba(0,0,0,0.75);--scan:rgba(0,200,255,0.25);--shadow:rgba(0,0,0,0.8);--nav-h:60px;}[data-theme="light"]{--bg:#f0f0f0;--bg2:#fafafa;--bg3:#fff;--border:#ddd;--border2:#ccc;--text:#111;--text2:#555;--text3:#888;--text4:#aaa;--accent:#d48800;--up:#00963e;--down:#d32f2f;--card-bg:#fff;--topbar:#fafafa;--overlay:rgba(255,255,255,0.8);--scan:rgba(0,120,255,0.15);--shadow:rgba(0,0,0,0.15);}*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}body{background:var(--bg);color:var(--text);font-family:"Courier New",monospace;height:100vh;height:100dvh;width:100vw;overflow:hidden;display:flex;flex-direction:column;transition:background 0.3s,color 0.3s;}.up{color:var(--up);}.down{color:var(--down);}.topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--topbar);min-height:48px;flex-shrink:0;}.topbar .page-title{font-size:0.72rem;color:var(--text2);text-transform:uppercase;letter-spacing:2px;flex:1;}.ticker-pill{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:4px 10px;font-size:0.68rem;white-space:nowrap;}.ticker-pill .sym{color:var(--text2);}.ticker-pill .val{color:var(--text);font-weight:bold;}.app{flex:1;display:flex;overflow:hidden;position:relative;}.sidebar{width:200px;min-width:200px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:10;transition:transform 0.2s;}.sidebar-header{display:flex;align-items:center;gap:10px;padding:14px 12px;border-bottom:1px solid var(--border);}.avatar{width:38px;height:38px;border-radius:6px;image-rendering:pixelated;border:1px solid var(--border2);flex-shrink:0;}.sidebar-header .title{font-size:0.72rem;color:var(--text);letter-spacing:2px;text-transform:uppercase;}.sidebar-header .sub{font-size:0.58rem;color:var(--text3);margin-top:1px;}.nav{flex:1;padding:8px 0;overflow-y:auto;}.nav-section{font-size:0.53rem;color:var(--text4);text-transform:uppercase;letter-spacing:2px;padding:10px 14px 3px;}.nav-item{display:flex;align-items:center;gap:9px;padding:8px 14px;color:var(--text2);font-size:0.7rem;cursor:pointer;transition:all 0.15s;border-left:2px solid transparent;text-decoration:none;letter-spacing:0.5px;}.nav-item:hover,.nav-item:active{color:var(--text);background:var(--bg3);border-left-color:var(--border2);}.nav-item.active{color:var(--text);background:var(--bg3);border-left-color:var(--accent);}.nav-item .icon{font-size:0.95rem;width:18px;text-align:center;}.sidebar-footer{padding:10px 14px;border-top:1px solid var(--border);font-size:0.58rem;color:var(--text4);}.status-row{display:flex;align-items:center;gap:6px;margin-bottom:6px;}.dot{width:6px;height:6px;border-radius:50%;background:var(--up);animation:pulse 2s infinite;flex-shrink:0;}@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}.theme-toggle{background:none;border:1px solid var(--border2);color:var(--text2);border-radius:4px;padding:3px 8px;font-size:0.58rem;cursor:pointer;font-family:inherit;transition:all 0.15s;margin-bottom:4px;display:block;width:100%;text-align:left;}.theme-toggle:hover{color:var(--text);border-color:var(--accent);}.content{flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;}.view{display:none;flex:1;overflow-y:auto;}.view.active{display:flex;flex-direction:column;}.office-container{flex:1;position:relative;padding:16px;background:radial-gradient(ellipse at center,var(--bg3) 0%,var(--bg) 100%);overflow:hidden;}.office-widget{position:absolute;border-radius:8px;overflow:hidden;transition:box-shadow 0.2s;}.office-widget:hover{box-shadow:0 0 20px rgba(240,165,0,0.3);}.office-frame{position:relative;width:100%;max-height:100%;border-radius:10px;overflow:visible;box-shadow:0 0 40px rgba(0,120,255,0.06),0 8px 32px var(--shadow);border:1px solid var(--border2);}.office-img-wrap{position:relative;width:100%;border-radius:10px;overflow:hidden;line-height:0;}.office-img{display:block;width:100%;height:auto;max-height:calc(100dvh - 200px);object-fit:cover;}.office-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,var(--overlay));padding:12px 16px 10px;display:flex;align-items:flex-end;justify-content:space-between;}.office-label{font-size:0.62rem;color:var(--text2);text-transform:uppercase;letter-spacing:2px;}.office-label span{display:block;font-size:0.95rem;color:var(--text);letter-spacing:1px;margin-top:2px;}.scan-line{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--scan),transparent);animation:scan 5s linear infinite;pointer-events:none;}@keyframes scan{0%{top:0}100%{top:100%}}.panel-inner{padding:16px;}.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px;}.card{background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:12px;}.card .label{font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px;}.card .value{font-size:1.2rem;font-weight:bold;color:var(--text);}.card .change{font-size:0.68rem;margin-top:3px;}.empty-state{color:var(--text3);font-size:0.72rem;margin-top:40px;text-align:center;line-height:2.2;padding:20px;}.bottom-nav{display:none;height:var(--nav-h);background:var(--bg2);border-top:1px solid var(--border);flex-shrink:0;flex-direction:row;align-items:stretch;z-index:20;padding-bottom:env(safe-area-inset-bottom,0px);}.bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--text3);font-size:0.55rem;text-decoration:none;cursor:pointer;transition:color 0.15s;border-top:2px solid transparent;padding-top:2px;}.bottom-nav-item .bicon{font-size:1.2rem;}.bottom-nav-item.active{color:var(--accent);border-top-color:var(--accent);}.bottom-nav-item:active{color:var(--text);}@media(max-width:640px){.sidebar{display:none!important;}.bottom-nav{display:flex!important;}.topbar{padding:8px 12px;}.office-container{padding:8px;}.office-img{max-height:calc(100dvh - var(--nav-h) - 120px);}.cards-grid{grid-template-columns:1fr 1fr;}.panel-inner{padding:12px;}}@media(max-width:640px) and (orientation:landscape){.bottom-nav{display:none!important;}.sidebar{display:flex!important;width:160px;min-width:160px;}.sidebar-header .title{font-size:0.65rem;letter-spacing:1px;}.sidebar-header .sub,.nav-section,.sidebar-footer .sf-detail{display:none;}.sidebar-footer{padding:8px;}.nav-item{padding:7px 10px;font-size:0.65rem;}.office-img{max-height:calc(100dvh - 100px);}.office-container{padding:6px;}}@media(min-width:641px){.sidebar{display:flex!important;}.bottom-nav{display:none!important;}}@media(min-width:641px) and (max-width:900px){.sidebar{width:160px;min-width:160px;}.sidebar-header .sub,.nav-section{display:none;}.nav-item{font-size:0.65rem;padding:8px 10px;}}
+/* ── Agent Avatar (sidebar) ── */
+.avatar-wrap{position:relative;display:inline-flex;flex-shrink:0;}
+.avatar-online-ring{position:absolute;inset:-3px;border-radius:8px;border:2px solid var(--up);box-shadow:0 0 8px var(--up);opacity:0;transition:opacity 0.4s;}
+.avatar-wrap.online .avatar-online-ring{opacity:1;animation:ring-pulse 2.5s ease-in-out infinite;}
+@keyframes ring-pulse{0%,100%{box-shadow:0 0 6px var(--up)}50%{box-shadow:0 0 16px var(--up)}}
+.agent-status-badge{display:flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;margin-top:6px;font-size:0.58rem;background:var(--bg3);border:1px solid var(--border2);justify-content:center;}
+.agent-status-badge .sdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.agent-status-badge.online-badge .sdot{background:var(--up);animation:pulse 2s infinite;}
+.agent-status-badge.offline-badge .sdot{background:var(--text4);}
+.agent-status-badge .stxt{color:var(--text2);letter-spacing:0.5px;}
+.sidebar-header-inner{display:flex;flex-direction:column;align-items:center;padding:14px 12px;border-bottom:1px solid var(--border);}
+.sidebar-header-inner .title{font-size:0.72rem;color:var(--text);letter-spacing:2px;text-transform:uppercase;margin-top:6px;}
+.sidebar-header-inner .sub{font-size:0.58rem;color:var(--text3);margin-top:1px;}
+
+/* ── Office Agent Sprite ── */
+.office-frame{position:relative;}
+.agent-sprite{position:absolute;width:48px;height:48px;cursor:pointer;z-index:10;transition:left 1.8s cubic-bezier(0.4,0,0.2,1),top 1.8s cubic-bezier(0.4,0,0.2,1),opacity 0.5s;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.7));image-rendering:pixelated;opacity:0;pointer-events:all;}
+.agent-sprite.visible{opacity:1;pointer-events:all;}
+.agent-sprite img{width:100%;height:100%;border-radius:8px;image-rendering:pixelated;border:2px solid var(--up);box-shadow:0 0 10px rgba(0,208,132,0.5);}
+.agent-sprite .sprite-status{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);white-space:nowrap;background:rgba(0,0,0,0.8);border:1px solid var(--border2);border-radius:10px;padding:1px 7px;font-size:0.5rem;color:var(--text2);font-family:"Courier New",monospace;pointer-events:none;}
+.agent-sprite .sprite-label{position:absolute;top:-22px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--up);border-radius:4px;padding:1px 6px;font-size:0.52rem;color:#000;font-weight:bold;opacity:0;transition:opacity 0.3s;}
+.agent-sprite:hover .sprite-label{opacity:1;}
+.agent-sprite.walking img{animation:walk-bob 0.35s ease-in-out infinite alternate;}
+@keyframes walk-bob{0%{transform:translateY(0) scale(1)}100%{transform:translateY(-3px) scale(1.03)}}
+.agent-sprite.idle img{animation:idle-breath 3s ease-in-out infinite;}
+@keyframes idle-breath{0%,100%{transform:scale(1)}50%{transform:scale(1.04) translateY(-1px)}}
+
+/* ── Speech bubble ── */
+.sprite-bubble{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:5px 10px;font-size:0.58rem;color:var(--text);white-space:nowrap;max-width:160px;white-space:normal;text-align:center;line-height:1.4;opacity:0;pointer-events:none;transition:opacity 0.3s;box-shadow:0 4px 12px var(--shadow);}
+.sprite-bubble::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--border2);}
+.sprite-bubble.show{opacity:1;}
+
+/* ── Offline mode agent sprite dimmed ── */
+.agent-sprite.offline img{filter:grayscale(0.8) brightness(0.6);border-color:var(--text4);box-shadow:none;}
+.agent-sprite.offline .sprite-status{color:var(--text4);}
+
+/* ── News Feed Strip ── */
+.news-strip{margin-top:8px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;overflow:hidden;max-height:180px;display:flex;flex-direction:column;}
+.news-strip-header{display:flex;align-items:center;justify-content:space-between;padding:6px 12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.news-strip-header .ns-label{font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:2px;}
+.news-strip-header .ns-dot{width:5px;height:5px;border-radius:50%;background:var(--up);animation:pulse 2s infinite;flex-shrink:0;}
+.news-strip-header .ns-src{font-size:0.52rem;color:var(--text4);}
+.news-items{overflow:hidden;flex:1;display:flex;flex-direction:column;gap:4px;padding:8px 12px;}
+.news-item{display:flex;gap:8px;padding:10px 12px;border-radius:6px;cursor:pointer;text-decoration:none;transition:all 0.3s;background:var(--bg3);opacity:0;transform:translateY(10px);animation:slideIn 0.4s ease forwards;}
+.news-item:hover{background:var(--border);transform:translateX(4px);}
+.news-item .ni-source{font-size:0.58rem;color:var(--accent);text-transform:uppercase;letter-spacing:1px;flex-shrink:0;min-width:70px;font-weight:bold;}
+.news-item .ni-title{font-size:0.75rem;color:var(--text);line-height:1.5;}
+.news-item:hover .ni-title{color:var(--accent);}
+@keyframes slideIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+.news-loading{padding:16px 12px;font-size:0.62rem;color:var(--text4);text-align:center;}
+@media(max-width:640px){.news-strip{max-height:160px;}.news-item .ni-source{min-width:48px;}}
+</style>
+</head>
+<body><div class="topbar"><div class="page-title" id="page-title">Virtual Office</div><div class="ticker-pill"><span class="sym">SOL</span><span class="val" id="sol-val">--</span><span id="sol-chg" style="font-size:0.62rem">--</span></div><button class="theme-toggle" style="margin:0;width:auto;padding:3px 10px;font-size:0.62rem;" onclick="toggleTheme()" id="theme-btn">&#9790;</button></div><div class="app"><div class="sidebar"><div class="sidebar-header-inner">
+<div class="avatar-wrap" id="av-wrap">
+  <div class="avatar-online-ring"></div>
+  <img class="avatar" style="width:52px;height:52px;" src="pedro.png" alt="S" onerror="this.style.display='none'">
+</div>
+<div class="title">Pedro</div>
+<div class="sub">Chief of Staff</div>
+<div class="agent-status-badge offline-badge" id="agent-badge">
+  <div class="sdot"></div><span class="stxt" id="agent-badge-txt">Offline</span>
+</div>
+</div><nav class="nav"><div class="nav-section">Base</div><a class="nav-item active" href="#" data-view="office" onclick="showView(this);return false;"><span class="icon">&#127968;</span><span>Virtual Office</span></a><a class="nav-item" href="#" data-view="markets" onclick="showView(this);return false;"><span class="icon">&#128200;</span><span>Markets</span></a><div class="nav-section">Tools</div><a class="nav-item" href="#" data-view="portfolio" onclick="showView(this);return false;"><span class="icon">&#128188;</span><span>Portfolio</span></a><a class="nav-item" href="#" data-view="orders" onclick="showView(this);return false;"><span class="icon">&#9889;</span><span>Orders</span></a><div class="nav-section">System</div><a class="nav-item" href="#" data-view="logs" onclick="showView(this);return false;"><span class="icon">&#128187;</span><span>Agent Log</span></a></nav><div class="sidebar-footer"><div class="status-row"><div class="dot"></div><span id="sidebar-time">--</span></div><button class="theme-toggle" onclick="toggleTheme()" id="theme-btn2">&#9790; Light</button><div class="sf-detail" style="margin-top:4px;color:var(--text4)">seekerclaw.xyz</div></div></div><div class="content"><div id="view-office" class="view active"><div class="office-container">
+<!-- NEWS FEED WIDGET -->
+<div class="office-widget news-strip" id="widget-news" data-widget-id="news">
+  <div class="news-strip-header">
+    <div style="display:flex;align-items:center;gap:6px;"><div class="ns-dot"></div><span class="ns-label">📡 Global Signal Feed</span></div>
+    <span class="ns-src" id="ns-updated">loading...</span>
+  </div>
+  <div class="news-items" id="news-items">
+    <div class="news-loading">Fetching feed...</div>
+  </div>
+</div>
+<!-- OFFICE IMAGE WIDGET -->
+<div class="office-widget office-frame" id="widget-office" data-widget-id="office">
+<div class="office-img-wrap"><div class="scan-line"></div><img class="office-img" src="office.jpg" alt="Virtual Office"></div>
+
+<div class="agent-sprite idle visible" id="agent-sprite" style="left:10%;top:55%;">
+  <div class="sprite-bubble" id="sprite-bubble"></div>
+  <div class="sprite-label">Pedro</div>
+  <img src="pedro.png" alt="Pedro" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22><rect width=%2248%22 height=%2248%22 rx=%228%22 fill=%22%2300d084%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2224%22>🐒</text></svg>'">
+  <div class="sprite-status" id="sprite-status-txt">analyzing...</div>
+</div><div class="office-overlay"><div class="office-label"><span>CD Office</span></div><div style="font-size:0.62rem;color:var(--text2)" id="office-time">--</div></div>
+</div></div><div id="view-markets" class="view"><div class="panel-inner"><div style="color:var(--text4);font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Live Prices</div><div class="cards-grid">
+<div class="card"><div class="label">SOL</div><div class="value" id="m-sol">--</div><div class="change" id="m-sol-chg">--</div></div>
+<div class="card"><div class="label">BTC</div><div class="value" id="m-btc">--</div><div class="change" id="m-btc-chg">--</div></div>
+<div class="card"><div class="label">ETH</div><div class="value" id="m-eth">--</div><div class="change" id="m-eth-chg">--</div></div>
+<div class="card"><div class="label">SKR</div><div class="value" id="m-skr">--</div><div class="change" id="m-skr-chg">--</div></div>
+<div class="card"><div class="label">GBOY</div><div class="value" id="m-gboy">--</div><div class="change" id="m-gboy-chg">--</div></div>
+<div class="card"><div class="label">NOBODY</div><div class="value" id="m-nobody">--</div><div class="change" id="m-nobody-chg">--</div></div>
+<div class="card"><div class="label">Updated</div><div class="value" style="font-size:0.82rem;color:var(--text2)" id="m-update">--</div><div class="change up">live</div></div>
+</div></div></div><div id="view-portfolio" class="view"><div class="empty-state">&#128188; Portfolio<br>Connect wallet to populate.</div></div><div id="view-orders" class="view"><div class="empty-state">&#9889; No active orders.</div></div><div id="view-logs" class="view"><div class="empty-state">&#128187; Agent log not yet connected.</div></div></div></div><nav class="bottom-nav"><a class="bottom-nav-item active" href="#" data-view="office" onclick="showView(this);return false;"><span class="bicon">&#127968;</span><span>Office</span></a><a class="bottom-nav-item" href="#" data-view="markets" onclick="showView(this);return false;"><span class="bicon">&#128200;</span><span>Markets</span></a><a class="bottom-nav-item" href="#" data-view="portfolio" onclick="showView(this);return false;"><span class="bicon">&#128188;</span><span>Portfolio</span></a><a class="bottom-nav-item" href="#" data-view="orders" onclick="showView(this);return false;"><span class="bicon">&#9889;</span><span>Orders</span></a><a class="bottom-nav-item" href="#" data-view="logs" onclick="showView(this);return false;"><span class="bicon">&#128187;</span><span>Log</span></a></nav><script>
+var titles={office:"Virtual Office",markets:"Markets",portfolio:"Portfolio",orders:"Orders",logs:"Agent Log"};
+function showView(el){
+  var v=el.getAttribute("data-view");
+  document.querySelectorAll(".view").forEach(function(x){x.classList.remove("active");});
+  var nv=document.getElementById("view-"+v);if(nv)nv.classList.add("active");
+  document.querySelectorAll(".nav-item,.bottom-nav-item").forEach(function(n){n.classList.remove("active");});
+  document.querySelectorAll("[data-view='"+v+"']").forEach(function(n){n.classList.add("active");});
+  var pt=document.getElementById("page-title");if(pt)pt.textContent=titles[v]||v;
+}
+
+// ── Theme ──────────────────────────────────────────────────────────────────
+var isDark=true;
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme",isDark?"dark":"light");
+  var b1=document.getElementById("theme-btn");var b2=document.getElementById("theme-btn2");
+  var lbl=isDark?"☀ Light":"☽ Dark";
+  if(b1)b1.textContent=isDark?"☀":"☽";if(b2)b2.textContent=lbl;
+  try{localStorage.setItem("mc-theme",isDark?"dark":"light");}catch(e){}
+}
+function toggleTheme(){isDark=!isDark;applyTheme();}
+(function(){try{var s=localStorage.getItem("mc-theme");if(s){isDark=s==="dark";}else{isDark=window.matchMedia("(prefers-color-scheme: dark)").matches;}}catch(e){isDark=true;}applyTheme();})();
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(e){try{if(!localStorage.getItem("mc-theme")){isDark=e.matches;applyTheme();}}catch(ex){isDark=e.matches;applyTheme();}});
+
+// ── Clock ──────────────────────────────────────────────────────────────────
+function tick(){
+  var now=new Date();
+  var t=now.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit",timeZone:"America/Chicago"});
+  var d=now.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"America/Chicago"});
+  var st=document.getElementById("sidebar-time");if(st)st.textContent=t+" CST";
+  var ot=document.getElementById("office-time");if(ot)ot.textContent=d+" · "+t;
+}
+
+// ── Prices ─────────────────────────────────────────────────────────────────
+async function fetchPrices(){
+  try{
+    var r=await fetch("/api/prices");if(!r.ok)throw new Error();
+    var d=await r.json();
+    function fmt(p,big){if(p===null||p===undefined)return "--";p=parseFloat(p);if(big)return "$"+p.toLocaleString("en-US",{maximumFractionDigits:0});return p>=1?"$"+p.toFixed(2):(p>=0.01?"$"+p.toFixed(4):"$"+p.toFixed(6));}
+    function chgEl(el,ch){if(!el)return;if(ch===null||ch===undefined){el.textContent="--";el.className="change";return;}ch=parseFloat(ch);el.textContent=(ch>=0?"+":"")+ch.toFixed(2)+"%";el.className="change "+(ch>=0?"up":"down");}
+    function setVal(id,txt){var e=document.getElementById(id);if(e)e.textContent=txt;}
+    // SOL (also updates sidebar)
+    if(d.SOL){var pr=fmt(d.SOL.price);var ch=parseFloat(d.SOL.change24h||0);var chStr=(ch>=0?"+":"")+ch.toFixed(2)+"%";var cls=ch>=0?"up":"down";setVal("sol-val","$"+parseFloat(d.SOL.price).toFixed(2));var sc=document.getElementById("sol-chg");if(sc){sc.textContent=chStr;sc.className=cls;}setVal("m-sol","$"+parseFloat(d.SOL.price).toFixed(2));chgEl(document.getElementById("m-sol-chg"),d.SOL.change24h);}
+    // BTC
+    if(d.BTC){setVal("m-btc",fmt(d.BTC.price,true));chgEl(document.getElementById("m-btc-chg"),d.BTC.change24h);}
+    // ETH
+    if(d.ETH){setVal("m-eth",fmt(d.ETH.price,true));chgEl(document.getElementById("m-eth-chg"),d.ETH.change24h);}
+    // SKR
+    if(d.SKR){setVal("m-skr",fmt(d.SKR.price));chgEl(document.getElementById("m-skr-chg"),d.SKR.change24h);}
+    // GBOY
+    if(d.GBOY){setVal("m-gboy",fmt(d.GBOY.price));chgEl(document.getElementById("m-gboy-chg"),d.GBOY.change24h);}
+    // NOBODY
+    if(d.NOBODY){setVal("m-nobody",fmt(d.NOBODY.price));chgEl(document.getElementById("m-nobody-chg"),d.NOBODY.change24h);}
+    // Timestamp
+    setVal("m-update",new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",timeZone:"America/Chicago"}));
+  }catch(e){var sv=document.getElementById("sol-val");if(sv)sv.textContent="err";}
+}
+
+// ── Agent Status ───────────────────────────────────────────────────────────
+var agentOnline=false;
+function setAgentStatus(online,statusTxt){
+  agentOnline=online;
+  var wrap=document.getElementById("av-wrap");
+  var badge=document.getElementById("agent-badge");
+  var btxt=document.getElementById("agent-badge-txt");
+  var sprite=document.getElementById("agent-sprite");
+  if(wrap){if(online){wrap.classList.add("online");}else{wrap.classList.remove("online");}}
+  if(badge){badge.className="agent-status-badge "+(online?"online-badge":"offline-badge");}
+  if(btxt)btxt.textContent=statusTxt||(online?"Online":"Offline");
+  if(sprite){
+    sprite.classList.toggle("visible",online);
+    sprite.classList.toggle("offline",!online);
+    if(online){setSpriteStatus(statusTxt||"online");}
+  }
+  if(online&&!walkerRunning)startWalker();
+  else if(!online)stopWalker();
+}
+
+function setSpriteStatus(txt){
+  var el=document.getElementById("sprite-status-txt");if(el)el.textContent=txt;
+}
+
+// ── Speech bubble ──────────────────────────────────────────────────────────
+var bubbleTimer=null;
+var idleQuotes=["scanning markets...","checking SOL...","watching the chart...","reading the tape...","on watch...","WAGMI.","wen moon?","degen hours.","analysing...","diamond hands.","checking onchain..."];
+function showBubble(txt,duration){
+  var b=document.getElementById("sprite-bubble");if(!b)return;
+  b.textContent=txt;b.classList.add("show");
+  if(bubbleTimer)clearTimeout(bubbleTimer);
+  bubbleTimer=setTimeout(function(){b.classList.remove("show");},duration||2800);
+}
+var lastQuoteIdx=-1;
+function randomIdleQuote(){
+  var idx;do{idx=Math.floor(Math.random()*idleQuotes.length);}while(idx===lastQuoteIdx&&idleQuotes.length>1);
+  lastQuoteIdx=idx;return idleQuotes[idx];
+}
+
+// ── Walker ─────────────────────────────────────────────────────────────────
+var walkerRunning=false;var walkTimer=null;var bubbleIntervalId=null;
+var waypoints=[
+  {x:8,y:55},{x:20,y:40},{x:35,y:60},{x:50,y:45},{x:65,y:55},
+  {x:78,y:35},{x:85,y:60},{x:60,y:70},{x:40,y:75},{x:25,y:65},
+  {x:15,y:50},{x:45,y:30},{x:70,y:40},{x:55,y:65},{x:30,y:50}
+];
+var wpIdx=0;var isWalking=false;
+
+function getSpritePos(){
+  var s=document.getElementById("agent-sprite");if(!s)return{x:10,y:50};
+  var left=parseFloat(s.style.left)||10;var top=parseFloat(s.style.top)||50;
+  return{x:left,y:top};
+}
+
+function moveSpriteTo(xPct,yPct){
+  var s=document.getElementById("agent-sprite");if(!s)return;
+  s.classList.remove("idle");s.classList.add("walking");
+  s.style.left=xPct+"%";s.style.top=yPct+"%";
+  isWalking=true;
+  // flip based on direction
+  var cur=getSpritePos();
+  s.style.transform=xPct<cur.x?"scaleX(-1)":"scaleX(1)";
+  setTimeout(function(){
+    s.classList.remove("walking");s.classList.add("idle");
+    isWalking=false;
+  },1900);
+}
+
+function nextWaypoint(){
+  if(!agentOnline)return;
+  wpIdx=(wpIdx+1)%waypoints.length;
+  var wp=waypoints[wpIdx];
+  // clamp so sprite stays in frame
+  var x=Math.min(Math.max(wp.x,5),88);var y=Math.min(Math.max(wp.y,10),82);
+  moveSpriteTo(x,y);
+  // random interval 4-10s between moves
+  var delay=4000+Math.random()*6000;
+  walkTimer=setTimeout(nextWaypoint,delay);
+}
+
+function startWalker(){
+  if(walkerRunning)return;walkerRunning=true;
+  // place sprite at first waypoint
+  var s=document.getElementById("agent-sprite");
+  if(s){s.style.left="10%";s.style.top="55%";}
+  setTimeout(nextWaypoint,1500);
+  // random idle quotes every 8-18s
+  bubbleIntervalId=setInterval(function(){
+    if(agentOnline&&!isWalking){showBubble(randomIdleQuote());}
+  },8000+Math.random()*10000);
+  // first bubble after 3s
+  setTimeout(function(){if(agentOnline)showBubble("gm. watching charts.");},3000);
+}
+function stopWalker(){
+  walkerRunning=false;
+  if(walkTimer)clearTimeout(walkTimer);walkTimer=null;
+  if(bubbleIntervalId)clearInterval(bubbleIntervalId);bubbleIntervalId=null;
+  var s=document.getElementById("agent-sprite");
+  if(s){s.classList.remove("walking");s.classList.add("idle");}
+}
+
+// sprite click — say something
+document.addEventListener("DOMContentLoaded",function(){
+  var s=document.getElementById("agent-sprite");
+  if(s)s.addEventListener("click",function(){
+    var clicks=["ja, I see you.","don't distract me.","markets don't sleep.","ach so, you're here.","genau — watching SOL.","bitte, I'm busy.","one sec, reading the tape.","charts first, chat later."];
+    showBubble(clicks[Math.floor(Math.random()*clicks.length)],3500);
+  });
+});
+
+// ── Agent Health Poll ──────────────────────────────────────────────────────
+var lastHealth={};
+async function pollAgentHealth(){
+  try{
+    var r=await fetch("/api/status");
+    if(!r.ok)throw new Error("status api failed");
+    var d=await r.json();
+    lastHealth=d;
+    var online=d.online||false;
+    var activity=d.activity||"offline";
+    setAgentStatus(online,activity);
+    setSpriteStatus(online?activity:"offline");
+  }catch(e){
+    // API down — show offline
+    setAgentStatus(false,"offline");
+    setSpriteStatus("offline");
+  }
+}
+
+function timeSince(isoStr){
+  try{
+    var d=new Date(isoStr);var s=Math.floor((Date.now()-d)/1000);
+    if(s<60)return s+"s ago";if(s<3600)return Math.floor(s/60)+"m ago";
+    return Math.floor(s/3600)+"h ago";
+  }catch(e){return "unknown";}
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+tick();setInterval(tick,1000);
+fetchPrices();setInterval(fetchPrices,30000);
+pollAgentHealth();setInterval(pollAgentHealth,15000);
+</script>
+<script>
+// ── RSS News Feed (via /api/news) ──
+let allNewsItems = [];
+let newsIndex = 0;
+
+async function loadNews() {
+  const upd = document.getElementById('ns-updated');
+  
+  try {
+    const r = await fetch('/api/news');
+    if (!r.ok) throw new Error('news api failed');
+    const d = await r.json();
+    
+    if (!d.items || !d.items.length) {
+      document.getElementById('news-items').innerHTML = '<div class="news-loading">No feed data available</div>';
+      upd.textContent = 'error';
+      return;
+    }
+    
+    allNewsItems = d.items;
+    newsIndex = 0;
+    cycleNews();
+    
+    const date = new Date(d.items[0].pubDate);
+    const mins = Math.round((Date.now() - date) / 60000);
+    upd.textContent = mins < 60 ? mins + 'm ago' : Math.round(mins/60) + 'h ago';
+  } catch(e) {
+    document.getElementById('news-items').innerHTML = '<div class="news-loading">Feed unavailable</div>';
+    upd.textContent = 'error';
+  }
+}
+
+function cycleNews() {
+  const el = document.getElementById('news-items');
+  if (!allNewsItems.length) return;
+  
+  const visible = allNewsItems.slice(newsIndex, newsIndex + 3);
+  el.innerHTML = visible.map((item, i) => `
+    <a class="news-item" href="${item.link}" target="_blank" rel="noopener" style="animation-delay:${i*0.1}s">
+      <span class="ni-source">${item.source}</span>
+      <span class="ni-title">${item.title}</span>
+    </a>
+  `).join('');
+  
+  newsIndex = (newsIndex + 3) % allNewsItems.length;
+}
+
+// Cycle news every 8 seconds
+setInterval(cycleNews, 8000);
+
+// ── Agent Log (via /api/agent-log) ──
+async function loadAgentLog() {
+  const logView = document.getElementById('view-logs');
+  if (!logView) return;
+  
+  try {
+    const r = await fetch('/api/agent-log');
+    if (!r.ok) throw new Error('agent-log api failed');
+    const d = await r.json();
+    
+    if (!d.entries || !d.entries.length) {
+      logView.innerHTML = '<div class="empty-state">💻 No recent agent activity.</div>';
+      return;
+    }
+    
+    const logHtml = `
+      <div class="panel-inner">
+        <div style="color:var(--text4);font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Recent Activity</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${d.entries.map(e => `
+            <div style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:10px;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+                <span style="font-size:0.58rem;color:var(--accent);text-transform:uppercase;">${e.role}</span>
+                <span style="font-size:0.52rem;color:var(--text4);">${new Date(e.timestamp).toLocaleTimeString()}</span>
+              </div>
+              <div style="font-size:0.65rem;color:var(--text2);line-height:1.5;">${escapeHtml(e.content)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    
+    logView.innerHTML = logHtml;
+  } catch(e) {
+    logView.innerHTML = '<div class="empty-state">💻 Agent log connection failed.<br>Check API configuration.</div>';
+  }
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Load on init, refresh every 10s
+loadNews();
+setInterval(loadNews, 5 * 60 * 1000);
+loadAgentLog();
+setInterval(loadAgentLog, 10 * 1000);
+</script>
+<script src="draggable-layout.js"></script>
+<script>
+// Initialize draggable widgets on office view
+document.addEventListener('DOMContentLoaded', () => {
+  const newsWidget = document.getElementById('widget-news');
+  const officeWidget = document.getElementById('widget-office');
+  if (newsWidget) officeLayout.register("news", newsWidget, ".news-strip-header"); if (officeWidget) officeLayout.register('news', newsWidget);
+  if (officeWidget) officeLayout.register('office', officeWidget);
+});
+</script></body></html>
