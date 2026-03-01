@@ -397,7 +397,7 @@ setInterval(loadAgentLog, 10 * 1000);
 document.addEventListener('DOMContentLoaded', () => {
   const newsWidget = document.getElementById('widget-news');
   const officeWidget = document.getElementById('widget-office');
-  if (newsWidget) officeLayout.register("news", newsWidget, ".news-strip-header"); if (officeWidget) officeLayout.register('news', newsWidget);
-  if (officeWidget) officeLayout.register('office', officeWidget);
+  if (newsWidget) officeLayout.register("news", newsWidget, ".news-strip-header");
+  if (officeWidget) officeLayout.register("office", officeWidget, ".office-overlay");
 });
 </script></body></html>
