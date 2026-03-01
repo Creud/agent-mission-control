@@ -22,8 +22,8 @@ class DraggableLayout {
 
   getDefaultLayout() {
     return {
-      news: { x: 0, y: 0, w: 100, h: 25 },
-      office: { x: 0, y: 25, w: 100, h: 75 }
+      news: { x: 0, y: 0, w: 100, h: 20 },
+      office: { x: 0, y: 22, w: 100, h: 78 }
     };
   }
 

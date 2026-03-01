@@ -1,0 +1,8 @@
+.office-container{flex:1;position:relative;background:radial-gradient(ellipse at center,var(--bg3) 0%,var(--bg) 100%);overflow:hidden;}
+.office-widget{position:absolute;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);transition:box-shadow 0.2s;}
+.office-widget:hover{box-shadow:0 0 20px rgba(240,165,0,0.3);}
+.office-frame{border:1px solid var(--border2);}
+.office-img-wrap{width:100%;height:100%;position:relative;}
+.office-img{width:100%;height:100%;object-fit:contain;}
+.news-strip{background:var(--bg2);border:1px solid var(--border);}
+.news-items{overflow-y:auto!important;max-height:none;}
