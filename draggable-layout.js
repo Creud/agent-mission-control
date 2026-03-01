@@ -26,8 +26,9 @@ class DraggableLayout {
   }
   getDefaultLayoutOld() {
     return {
-      news: { x: 0, y: 0, w: 100, h: 20 },
-      office: { x: 0, y: 22, w: 100, h: 78 }
+      news: { x: 0, y: 0, w: 100, h: 18 },
+      office: { x: 0, y: 20, w: 100, h: 60 },
+      markets: { x: 0, y: 82, w: 100, h: 18 }
     };
   }
 

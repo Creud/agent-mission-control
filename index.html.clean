@@ -50,16 +50,6 @@
 @keyframes slideIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 .news-loading{padding:16px 12px;font-size:0.62rem;color:var(--text4);text-align:center;}
 @media(max-width:640px){.news-strip{max-height:160px;}.news-item .ni-source{min-width:48px;}}
-
-.news-items{overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:4px;padding:8px 12px;scrollbar-width:none;}
-.news-items::-webkit-scrollbar{display:none;}
-.office-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:6px 12px;cursor:move;display:flex;align-items:center;justify-content:space-between;font-size:0.62rem;color:var(--text);text-transform:uppercase;letter-spacing:2px;}
-.markets-widget{background:var(--bg2);border:1px solid var(--border);}
-.markets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px;}
-.market-item{background:var(--bg3);border-radius:4px;padding:6px;text-align:center;}
-.market-item .sym{font-size:0.55rem;color:var(--text3);text-transform:uppercase;}
-.market-item .price{font-size:0.8rem;color:var(--text);font-weight:bold;margin:2px 0;}
-.market-item .chg{font-size:0.5rem;}
 </style>
 </head>
 <body><div class="topbar"><div class="page-title" id="page-title">Virtual Office</div><div class="ticker-pill"><span class="sym">SOL</span><span class="val" id="sol-val">--</span><span id="sol-chg" style="font-size:0.62rem">--</span></div><button class="theme-toggle" style="margin:0;width:auto;padding:3px 10px;font-size:0.62rem;" onclick="toggleTheme()" id="theme-btn">&#9790;</button></div><div class="app"><div class="sidebar"><div class="sidebar-header-inner">
@@ -85,7 +75,6 @@
 </div>
 <!-- OFFICE IMAGE WIDGET -->
 <div class="office-widget office-frame" id="widget-office" data-widget-id="office">
-<div class="office-header">CD's Digital Lab</div>
 <div class="office-img-wrap"><div class="scan-line"></div><img class="office-img" src="office.jpg" alt="Virtual Office"></div>
 
 <div class="agent-sprite idle visible" id="agent-sprite" style="left:10%;top:55%;">
@@ -94,19 +83,6 @@
   <img src="pedro.png" alt="Pedro" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2248%22 height=%2248%22><rect width=%2248%22 height=%2248%22 rx=%228%22 fill=%22%2300d084%22/><text x=%2250%25%22 y=%2255%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2224%22>🐒</text></svg>'">
   <div class="sprite-status" id="sprite-status-txt">analyzing...</div>
 </div><div class="office-overlay"><div class="office-label"><span>CD Office</span></div><div style="font-size:0.62rem;color:var(--text2)" id="office-time">--</div></div>
-
-<!-- MARKETS WIDGET -->
-<div class="office-widget markets-widget" id="widget-markets" data-widget-id="markets">
-  <div class="office-header">Live Markets</div>
-  <div class="markets-grid">
-    <div class="market-item"><div class="sym">SOL</div><div class="price" id="mw-sol">--</div><div class="chg up" id="mw-sol-chg">--</div></div>
-    <div class="market-item"><div class="sym">BTC</div><div class="price" id="mw-btc">--</div><div class="chg up" id="mw-btc-chg">--</div></div>
-    <div class="market-item"><div class="sym">ETH</div><div class="price" id="mw-eth">--</div><div class="chg up" id="mw-eth-chg">--</div></div>
-    <div class="market-item"><div class="sym">SKR</div><div class="price" id="mw-skr">--</div><div class="chg" id="mw-skr-chg">--</div></div>
-    <div class="market-item"><div class="sym">GBOY</div><div class="price" id="mw-gboy">--</div><div class="chg" id="mw-gboy-chg">--</div></div>
-    <div class="market-item"><div class="sym">NOBODY</div><div class="price" id="mw-nobody">--</div><div class="chg" id="mw-nobody-chg">--</div></div>
-  </div>
-</div>
 </div></div><div id="view-markets" class="view"><div class="panel-inner"><div style="color:var(--text4);font-size:0.62rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Live Prices</div><div class="cards-grid">
 <div class="card"><div class="label">SOL</div><div class="value" id="m-sol">--</div><div class="change" id="m-sol-chg">--</div></div>
 <div class="card"><div class="label">BTC</div><div class="value" id="m-btc">--</div><div class="change" id="m-btc-chg">--</div></div>
@@ -157,17 +133,17 @@ async function fetchPrices(){
     function chgEl(el,ch){if(!el)return;if(ch===null||ch===undefined){el.textContent="--";el.className="change";return;}ch=parseFloat(ch);el.textContent=(ch>=0?"+":"")+ch.toFixed(2)+"%";el.className="change "+(ch>=0?"up":"down");}
     function setVal(id,txt){var e=document.getElementById(id);if(e)e.textContent=txt;}
     // SOL (also updates sidebar)
-    if(d.SOL){var pr=fmt(d.SOL.price);var ch=parseFloat(d.SOL.change24h||0);var chStr=(ch>=0?"+":"")+ch.toFixed(2)+"%";var cls=ch>=0?"up":"down";setVal("sol-val","$"+parseFloat(d.SOL.price).toFixed(2));var sc=document.getElementById("sol-chg");if(sc){sc.textContent=chStr;sc.className=cls;}setVal("m-sol","$"+parseFloat(d.SOL.price).toFixed(2));chgEl(document.getElementById("mw-sol-chg"),d.SOL.change24h);}
+    if(d.SOL){var pr=fmt(d.SOL.price);var ch=parseFloat(d.SOL.change24h||0);var chStr=(ch>=0?"+":"")+ch.toFixed(2)+"%";var cls=ch>=0?"up":"down";setVal("sol-val","$"+parseFloat(d.SOL.price).toFixed(2));var sc=document.getElementById("sol-chg");if(sc){sc.textContent=chStr;sc.className=cls;}setVal("m-sol","$"+parseFloat(d.SOL.price).toFixed(2));chgEl(document.getElementById("m-sol-chg"),d.SOL.change24h);}
     // BTC
-    if(d.BTC){setVal("m-btc",fmt(d.BTC.price,true));chgEl(document.getElementById("mw-btc-chg"),d.BTC.change24h);}
+    if(d.BTC){setVal("m-btc",fmt(d.BTC.price,true));chgEl(document.getElementById("m-btc-chg"),d.BTC.change24h);}
     // ETH
-    if(d.ETH){setVal("m-eth",fmt(d.ETH.price,true));chgEl(document.getElementById("mw-eth-chg"),d.ETH.change24h);}
+    if(d.ETH){setVal("m-eth",fmt(d.ETH.price,true));chgEl(document.getElementById("m-eth-chg"),d.ETH.change24h);}
     // SKR
-    if(d.SKR){setVal("m-skr",fmt(d.SKR.price));chgEl(document.getElementById("mw-skr-chg"),d.SKR.change24h);}
+    if(d.SKR){setVal("m-skr",fmt(d.SKR.price));chgEl(document.getElementById("m-skr-chg"),d.SKR.change24h);}
     // GBOY
-    if(d.GBOY){setVal("m-gboy",fmt(d.GBOY.price));chgEl(document.getElementById("mw-gboy-chg"),d.GBOY.change24h);}
+    if(d.GBOY){setVal("m-gboy",fmt(d.GBOY.price));chgEl(document.getElementById("m-gboy-chg"),d.GBOY.change24h);}
     // NOBODY
-    if(d.NOBODY){setVal("m-nobody",fmt(d.NOBODY.price));chgEl(document.getElementById("mw-nobody-chg"),d.NOBODY.change24h);}
+    if(d.NOBODY){setVal("m-nobody",fmt(d.NOBODY.price));chgEl(document.getElementById("m-nobody-chg"),d.NOBODY.change24h);}
     // Timestamp
     setVal("m-update",new Date().toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",timeZone:"America/Chicago"}));
   }catch(e){var sv=document.getElementById("sol-val");if(sv)sv.textContent="err";}
@@ -422,8 +398,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const newsWidget = document.getElementById('widget-news');
   const officeWidget = document.getElementById('widget-office');
   if (newsWidget) officeLayout.register("news", newsWidget, ".news-strip-header");
-  if (officeWidget) officeLayout.register("office", officeWidget, ".office-header");
-  const marketsWidget = document.getElementById('widget-markets');
-  if (marketsWidget) officeLayout.register("markets", marketsWidget, ".office-header");
+  if (officeWidget) officeLayout.register("office", officeWidget, ".office-overlay");
 });
 </script></body></html>
